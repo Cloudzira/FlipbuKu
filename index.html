@@ -383,6 +383,148 @@
     @media (prefers-reduced-motion: reduce) {
       #splash-screen *, #splash-screen *::before { animation: none !important; }
     }
+
+    /* ===== HALAMAN LOGIN (PASSCODE) ===== */
+    body.app-locked > nav,
+    body.app-locked > main,
+    body.app-locked > #login-modal,
+    body.app-locked > #quran-overlay { visibility: hidden; }
+    #gate-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      overflow-y: auto;
+      background: radial-gradient(circle at 15% 15%, #2e1065 0%, #090d16 50%, #020617 100%);
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.45s ease;
+    }
+    #gate-screen.gate-fade { opacity: 0; pointer-events: none; }
+    #gate-screen.gate-off { display: none; }
+    #gate-screen .gate-orb { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+    #gate-screen .gate-orb-1 { width: 320px; height: 320px; top: -90px; left: -90px; background: #6366f1; opacity: 0.28; animation: gateDrift 12s ease-in-out infinite; }
+    #gate-screen .gate-orb-2 { width: 280px; height: 280px; bottom: -70px; right: -70px; background: #ec4899; opacity: 0.18; animation: gateDrift 14s ease-in-out infinite reverse; }
+    #gate-screen .gate-main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 16px 12px;
+    }
+    #gate-screen .gate-card {
+      width: 100%;
+      max-width: 380px;
+      padding: 32px 28px 26px;
+      border-radius: 24px;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.62);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 30px 80px rgba(2, 6, 23, 0.6);
+      animation: gateIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    #gate-screen .gate-card.shake { animation: gateShake 0.45s ease; }
+    #gate-screen .gate-logo {
+      display: block;
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 14px;
+      border-radius: 20px;
+      box-shadow: 0 14px 36px rgba(99, 102, 241, 0.5);
+    }
+    #gate-screen .gate-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      background: linear-gradient(90deg, #ffffff, #c7d2fe, #d8b4fe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    #gate-screen .gate-sub {
+      margin-top: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(165, 180, 252, 0.75);
+    }
+    #gate-screen .gate-lead { margin: 22px 0 16px; font-size: 13px; color: #cbd5e1; }
+    #gate-screen .gate-field { position: relative; }
+    #gate-screen .gate-field input#gate-input {
+      width: 100%;
+      padding: 14px 46px 14px 44px;
+      border-radius: 14px;
+      background: rgba(2, 6, 23, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #gate-screen .gate-field input#gate-input::placeholder { color: #64748b; letter-spacing: 0.04em; }
+    #gate-screen .gate-field input#gate-input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25); }
+    #gate-screen .gate-field input#gate-input:disabled { opacity: 0.5; }
+    #gate-screen .gate-ico { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #818cf8; font-size: 14px; pointer-events: none; }
+    #gate-screen #gate-eye {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+    }
+    #gate-screen #gate-eye:hover { color: #ffffff; background: rgba(255, 255, 255, 0.08); }
+    #gate-screen #gate-error { min-height: 18px; margin: 10px 0 2px; font-size: 12px; color: #fca5a5; }
+    #gate-screen .gate-remember {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0 18px;
+      font-size: 12px;
+      color: #a5b4fc;
+      cursor: pointer;
+      user-select: none;
+    }
+    #gate-screen .gate-remember input { width: 15px; height: 15px; accent-color: #6366f1; cursor: pointer; }
+    #gate-screen #gate-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 14px;
+      border: 1px solid rgba(165, 180, 252, 0.3);
+      background: linear-gradient(90deg, #4f46e5, #7c3aed, #c026d3);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 14px 34px rgba(99, 102, 241, 0.4);
+      transition: transform 0.15s, opacity 0.2s;
+    }
+    #gate-screen #gate-btn:hover { opacity: 0.94; }
+    #gate-screen #gate-btn:active { transform: scale(0.98); }
+    #gate-screen #gate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    #gate-screen .gate-footer { position: relative; z-index: 1; padding: 0 16px max(22px, env(safe-area-inset-bottom, 0px)); }
+    @keyframes gateIn { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes gateShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-9px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(4px); } }
+    @keyframes gateDrift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, 24px); } }
+    @media (prefers-reduced-motion: reduce) {
+      #gate-screen *, #gate-screen *::before { animation: none !important; }
+    }
   </style>
 </head>
 <body class="flex flex-col h-[100dvh] min-h-0 overflow-hidden">
@@ -427,6 +569,197 @@
     })();
   </script>
 
+  <!-- HALAMAN LOGIN (PASSCODE) -->
+  <div id="gate-screen" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <div class="gate-orb gate-orb-1"></div>
+    <div class="gate-orb gate-orb-2"></div>
+    <div class="gate-main">
+      <div class="gate-card" id="gate-card">
+        <img class="gate-logo" src="icon-192.png" alt="Logo FlipbuKu" width="76" height="76">
+        <div class="gate-title" id="gate-title">FLIPBUKU</div>
+        <div class="gate-sub">Bahan ajar Tartili</div>
+        <p class="gate-lead">Masukkan passcode untuk melanjutkan</p>
+        <form id="gate-form" autocomplete="off" novalidate>
+          <label for="gate-input" class="sr-only">Passcode</label>
+          <div class="gate-field">
+            <i class="fa-solid fa-lock gate-ico" aria-hidden="true"></i>
+            <input id="gate-input" name="gate-passcode" type="password" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="64" placeholder="Passcode">
+            <button type="button" id="gate-eye" aria-label="Tampilkan passcode"><i class="fa-solid fa-eye"></i></button>
+          </div>
+          <p id="gate-error" role="alert" aria-live="polite"></p>
+          <label class="gate-remember"><input type="checkbox" id="gate-remember" checked> Ingat perangkat ini</label>
+          <button type="submit" id="gate-btn">Masuk <i class="fa-solid fa-arrow-right" style="margin-left:6px;"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="gate-footer">
+      <footer style="text-align: center; font-size: 11px; color: #94a3b8; font-family: sans-serif;">
+        <p>Crafted with <span style="color: #ff007f;">♥</span> by <span style="color: #00f2fe; font-weight: 600; text-shadow: 0 0 10px rgba(0,242,254,0.4);">Kurniapedia</span> 2026</p>
+      </footer>
+    </div>
+  </div>
+  <script>
+    (function () {
+      // Hash SHA-256 dari passcode (bukan teks asli). Untuk ganti passcode, lihat petunjuk di bawah.
+      var EXPECTED = 'cd717ca55dcc11e4196f234d1de5b32f6689f8f3734c27bbd13b24ac473a74a7';
+      var KEY = 'flipbuku_gate_ok', UNTIL = 'flipbuku_gate_until';
+      var MAX_TRY = 5, LOCK_MS = 30000;
+
+      var gate = document.getElementById('gate-screen');
+      var card = document.getElementById('gate-card');
+      var form = document.getElementById('gate-form');
+      var input = document.getElementById('gate-input');
+      var err = document.getElementById('gate-error');
+      var btn = document.getElementById('gate-btn');
+      var eye = document.getElementById('gate-eye');
+      var remember = document.getElementById('gate-remember');
+      var tries = 0, timer = null, locking = false;
+
+      /* SHA-256 (JS murni, jalan di http maupun https) */
+      function sha256(ascii) {
+        function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+        var mathPow = Math.pow, maxWord = mathPow(2, 32), lengthProperty = 'length';
+        var i, j, result = '', words = [], asciiBitLength = ascii[lengthProperty] * 8;
+        var hash = [], k = [], primeCounter = 0, isComposite = {};
+        for (var candidate = 2; primeCounter < 64; candidate++) {
+          if (!isComposite[candidate]) {
+            for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+            hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+            k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+          }
+        }
+        ascii += '\x80';
+        while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+        for (i = 0; i < ascii[lengthProperty]; i++) {
+          j = ascii.charCodeAt(i);
+          if (j >> 8) return '';
+          words[i >> 2] |= j << ((3 - i) % 4) * 8;
+        }
+        words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+        words[words[lengthProperty]] = (asciiBitLength);
+        for (j = 0; j < words[lengthProperty];) {
+          var w = words.slice(j, j += 16), oldHash = hash;
+          hash = hash.slice(0, 8);
+          for (i = 0; i < 64; i++) {
+            var w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
+            var temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] +
+              (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+            var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+            hash = [(temp1 + temp2) | 0].concat(hash);
+            hash[4] = (hash[4] + temp1) | 0;
+          }
+          for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+        }
+        for (i = 0; i < 8; i++) for (j = 3; j + 1; j--) { var b = (hash[i] >> (j * 8)) & 255; result += ((b < 16) ? 0 : '') + b.toString(16); }
+        return result;
+      }
+
+      function hashOf(v) {
+        return sha256('flipbuku|' + unescape(encodeURIComponent(String(v).trim().toLowerCase())));
+      }
+      function isAuthed() {
+        try { return localStorage.getItem(KEY) === EXPECTED || sessionStorage.getItem(KEY) === EXPECTED; }
+        catch (e) { return false; }
+      }
+      function saveAuth(persist) {
+        try {
+          localStorage.removeItem(KEY); sessionStorage.removeItem(KEY);
+          (persist ? localStorage : sessionStorage).setItem(KEY, EXPECTED);
+        } catch (e) {}
+      }
+      function clearAuth() {
+        try { localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); } catch (e) {}
+      }
+      function setLocked(on) { document.body.classList.toggle('app-locked', on); }
+      function showError(msg) { err.textContent = msg || ''; }
+      function shake() {
+        card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+      }
+      function remainingLock() {
+        try { return Math.max(0, (+localStorage.getItem(UNTIL) || 0) - Date.now()); } catch (e) { return 0; }
+      }
+      function tickLock() {
+        var ms = remainingLock();
+        if (ms > 0) {
+          locking = true;
+          input.disabled = true; btn.disabled = true;
+          showError('Terlalu banyak percobaan. Coba lagi dalam ' + Math.ceil(ms / 1000) + ' detik.');
+          timer = setTimeout(tickLock, 500);
+        } else {
+          if (timer) { clearTimeout(timer); timer = null; }
+          input.disabled = false; btn.disabled = false;
+          if (locking) { locking = false; showError(''); }
+          try { localStorage.removeItem(UNTIL); } catch (e) {}
+          tries = 0;
+        }
+      }
+      function focusInput() {
+        // Fokus otomatis hanya di laptop/desktop (di HP supaya keyboard tidak langsung menutupi layar)
+        if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+          setTimeout(function () { try { input.focus({ preventScroll: true }); } catch (e) {} }, 300);
+        }
+      }
+
+      eye.addEventListener('click', function () {
+        var show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        eye.setAttribute('aria-label', show ? 'Sembunyikan passcode' : 'Tampilkan passcode');
+        eye.innerHTML = '<i class="fa-solid ' + (show ? 'fa-eye-slash' : 'fa-eye') + '"></i>';
+        input.focus();
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (remainingLock() > 0) { tickLock(); return; }
+        var v = input.value;
+        if (!v.trim()) { showError('Masukkan passcode terlebih dahulu.'); shake(); input.focus(); return; }
+        if (hashOf(v) === EXPECTED) {
+          saveAuth(remember.checked);
+          tries = 0; showError('');
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> Berhasil';
+          setLocked(false);
+          gate.classList.add('gate-fade');
+          setTimeout(function () {
+            gate.classList.add('gate-off');
+            input.value = ''; btn.innerHTML = 'Masuk <i class="fa-solid fa-arrow-right" style="margin-left:6px;"></i>';
+            window.dispatchEvent(new Event('resize'));
+          }, 450);
+        } else {
+          tries++;
+          shake();
+          if (tries >= MAX_TRY) {
+            try { localStorage.setItem(UNTIL, String(Date.now() + LOCK_MS)); } catch (e) {}
+            tickLock();
+          } else {
+            showError('Passcode salah. Sisa percobaan: ' + (MAX_TRY - tries) + '.');
+          }
+          input.select();
+        }
+      });
+
+      // Kunci kembali aplikasi (tombol gembok di navbar)
+      window.lockApp = function () {
+        clearAuth();
+        input.value = ''; input.type = 'password';
+        eye.innerHTML = '<i class="fa-solid fa-eye"></i>';
+        showError('');
+        gate.classList.remove('gate-off', 'gate-fade');
+        setLocked(true);
+        if (remainingLock() > 0) tickLock();
+        focusInput();
+      };
+
+      // Keadaan awal
+      if (isAuthed()) {
+        gate.classList.add('gate-off');
+      } else {
+        setLocked(true);
+        if (remainingLock() > 0) tickLock();
+        focusInput();
+      }
+    })();
+  </script>
+
   <!-- NAVBAR UTAMA -->
   <nav class="glass-panel sticky top-0 z-50 px-4 sm:px-6 py-2.5 flex items-center justify-between border-b border-white/10 flex-shrink-0 h-14">
     <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchView('catalog')">
@@ -442,6 +775,10 @@
     </div>
 
     <div class="flex items-center space-x-2 sm:space-x-3">
+      <!-- TOMBOL KUNCI (kembali ke halaman login passcode) -->
+      <button id="nav-lock-btn" onclick="lockApp()" aria-label="Kunci aplikasi" title="Kunci aplikasi" class="w-8 h-8 rounded-xl text-xs bg-white/10 hover:bg-white/20 text-white transition flex items-center justify-center border border-white/20">
+        <i class="fa-solid fa-lock"></i>
+      </button>
       <!-- TOMBOL INSTALL APLIKASI (tersembunyi sampai browser mengizinkan install) -->
       <button id="nav-install-btn" onclick="installApp()" aria-label="Install aplikasi FlipbuKu" style="display:none" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-white/10 hover:bg-white/20 text-white transition items-center gap-1.5 border border-white/20">
         <i class="fa-solid fa-download"></i> <span class="hidden min-[400px]:inline">Install</span>
@@ -943,6 +1280,7 @@ notify pgrst, 'reload schema';</pre>
     function setupKeyboardNavigation() {
       let lastKeyFlip = 0;
       document.addEventListener('keydown', (event) => {
+        if (document.body.classList.contains('app-locked')) return;   // halaman login masih aktif
         if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
         if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
 
