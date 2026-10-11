@@ -525,6 +525,12 @@
     @media (prefers-reduced-motion: reduce) {
       #gate-screen *, #gate-screen *::before { animation: none !important; }
     }
+
+    /* ===== NAVBAR: tombol jadi ikon saja kalau tidak muat (tanpa teks turun baris) ===== */
+    body > nav > div { flex-shrink: 0; white-space: nowrap; }
+    body > nav button { white-space: nowrap; flex-shrink: 0; }
+    body > nav.nav-compact .nav-label { display: none; }
+    body > nav.nav-tight .nav-brand-text { display: none; }
   </style>
 </head>
 <body class="flex flex-col h-[100dvh] min-h-0 overflow-hidden">
@@ -764,7 +770,7 @@
   <nav class="glass-panel sticky top-0 z-50 px-4 sm:px-6 py-2.5 flex items-center justify-between border-b border-white/10 flex-shrink-0 h-14">
     <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchView('catalog')">
       <img src="icon-192.png" alt="Logo FlipbuKu" width="36" height="36" decoding="async" class="w-9 h-9 rounded-xl shadow-lg shadow-indigo-500/40 group-hover:scale-105 transition-transform">
-      <div class="flex flex-col leading-tight">
+      <div class="flex flex-col leading-tight nav-brand-text">
         <span class="text-base font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-purple-300">
           FLIPBUKU
         </span>
@@ -781,18 +787,48 @@
       </button>
       <!-- TOMBOL INSTALL APLIKASI (tersembunyi sampai browser mengizinkan install) -->
       <button id="nav-install-btn" onclick="installApp()" aria-label="Install aplikasi FlipbuKu" style="display:none" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-white/10 hover:bg-white/20 text-white transition items-center gap-1.5 border border-white/20">
-        <i class="fa-solid fa-download"></i> <span class="hidden min-[400px]:inline">Install</span>
+        <i class="fa-solid fa-download"></i> <span class="nav-label">Install</span>
       </button>
       <!-- TOMBOL AL-QURAN (gaya sama dengan tombol Admin/Cloudzone) -->
       <button id="nav-quran-btn" onclick="toggleQuran()" aria-label="Buka Al-Quran" aria-pressed="false" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white transition flex items-center gap-1.5 shadow-lg shadow-indigo-600/30 border border-indigo-400/30">
-        <i id="nav-quran-icon" class="fa-solid fa-book-quran"></i> <span id="nav-quran-text" class="hidden min-[400px]:inline">Al-Quran</span>
+        <i id="nav-quran-icon" class="fa-solid fa-book-quran"></i> <span id="nav-quran-text" class="nav-label">Al-Quran</span>
       </button>
       <!-- PERBEDAAN 1: ICON KATALOG MENGGUNAKAN GRID/ICONS KHUSUS KATALOG -->
-      <button id="nav-admin-btn" onclick="openAdminModalOrView()" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white transition flex items-center gap-1.5 shadow-lg shadow-indigo-600/30 border border-indigo-400/30">
-        <i class="fa-solid fa-user-shield"></i> <span id="admin-btn-text">Admin</span>
+      <button id="nav-admin-btn" onclick="openAdminModalOrView()" aria-label="Cloudzone (Admin)" title="Cloudzone" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white transition flex items-center gap-1.5 shadow-lg shadow-indigo-600/30 border border-indigo-400/30">
+        <i class="fa-solid fa-user-shield"></i> <span id="admin-btn-text" class="nav-label">Admin</span>
       </button>
     </div>
   </nav>
+
+  <!-- NAVBAR ADAPTIF: label tombol disembunyikan (jadi ikon saja) hanya jika ruang tidak cukup -->
+  <script>
+    (function () {
+      var nav = document.querySelector('body > nav');
+      if (!nav) return;
+      var raf = 0;
+      function overflows() { return nav.scrollWidth > nav.clientWidth + 1; }
+      function fit() {
+        nav.classList.remove('nav-compact', 'nav-tight');
+        if (!overflows()) return;
+        nav.classList.add('nav-compact');          // 1) tombol Al-Quran / Cloudzone / Install jadi ikon saja
+        if (!overflows()) return;
+        nav.classList.add('nav-tight');            // 2) layar sangat sempit: teks logo juga disembunyikan
+      }
+      function schedule() { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); }
+
+      if (window.ResizeObserver) {
+        var ro = new ResizeObserver(schedule);
+        ro.observe(nav);
+        if (nav.lastElementChild) ro.observe(nav.lastElementChild);   // ikut berubah saat teks/tombol berubah
+      }
+      window.addEventListener('resize', schedule);
+      window.addEventListener('orientationchange', schedule);
+      window.addEventListener('load', schedule);
+      document.addEventListener('DOMContentLoaded', schedule);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+      schedule();
+    })();
+  </script>
 
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-1 min-h-0 overflow-hidden relative flex flex-col">
@@ -2333,9 +2369,9 @@ notify pgrst, 'reload schema';</pre>
     function updateAdminNavUI() {
       const btnText = document.getElementById('admin-btn-text');
       if (currentUser) {
-        btnText.innerText = "Admin";
+        btnText.innerText = "Cloudzone";
       } else {
-        btnText.innerText = "Admin";
+        btnText.innerText = "Cloudzone";
       }
     }
 
