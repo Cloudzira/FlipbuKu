@@ -41,6 +41,10 @@
       box-sizing: border-box;
     }
 
+    #reader-page-controls.rtl {
+      flex-direction: row-reverse;
+    }
+
     html, body {
       height: 100%;
       height: 100dvh;
@@ -914,7 +918,7 @@
           </button>
         </div>
 
-        <div class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+        <div id="reader-page-controls" class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
           <button onclick="flipPreviousPage()" class="p-2 sm:px-3 sm:py-1.5 text-indigo-300 hover:text-white flex items-center gap-1 text-xs glass-card rounded-xl">
             <i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Prev</span>
           </button>
@@ -1763,6 +1767,7 @@ notify pgrst, 'reload schema';</pre>
       pageCanvasCacheBookId = book.id;
       lastBuildRect = null;
       currentBook = { ...book, reading_direction: normalizeReadingDirection(book.reading_direction) };
+      document.getElementById('reader-page-controls').classList.toggle('rtl', currentBook.reading_direction === 'rtl');
       resetZoom();
       document.getElementById('reader-book-title').textContent = book.title;
       switchView('reader');
