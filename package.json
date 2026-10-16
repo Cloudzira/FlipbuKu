@@ -1,0 +1,11 @@
+{
+  "name": "flipbuku",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i ./tailwind.css -o ./styles.css --minify",
+    "watch": "tailwindcss -i ./tailwind.css -o ./styles.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}
