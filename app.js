@@ -1918,8 +1918,18 @@ const SUPABASE_URL = 'https://pamvpcmkrdgdbyskwzcf.supabase.co'; // contoh: http
       };
 
       if ('serviceWorker' in navigator) {
+        // Kalau ada versi baru aplikasi, muat ulang otomatis sekali agar langsung memakai file terbaru
+        const hadController = !!navigator.serviceWorker.controller;
+        let reloaded = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!hadController || reloaded) return;
+          reloaded = true;
+          window.location.reload();
+        });
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js').catch(() => {});
+          navigator.serviceWorker.register('sw.js')
+            .then((reg) => { reg.update().catch(() => {}); })
+            .catch(() => {});
         });
       }
     })();

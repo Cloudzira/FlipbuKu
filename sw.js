@@ -1,10 +1,12 @@
 /* FlipbuKu Service Worker
- * - App shell (index.html, ikon, manifest) di-cache agar aplikasi cepat dibuka & tetap tampil saat offline.
+ * - App shell (index.html, styles.css, app.js, ikon, manifest) disimpan agar aplikasi cepat dibuka & tetap tampil saat offline.
+ * - File inti (html/css/js) memakai "jaringan dulu": setiap ada versi baru di hosting, langsung terpakai.
+ *   Cache hanya jadi cadangan saat offline.
  * - Library CDN (Tailwind, FontAwesome, Google Fonts, PDF.js, StPageFlip, Supabase JS) di-cache saat pertama dipakai.
  * - Data Supabase, file PDF, dan panel Al-Quran TIDAK di-cache (selalu langsung ke jaringan).
- * Ubah VERSION kalau Anda mengganti ikon/file shell supaya cache lama dibuang.
+ * Ubah VERSION setiap kali Anda mengunggah perubahan besar supaya cache lama dibuang.
  */
-const VERSION = 'v4';
+const VERSION = 'v5';
 const SHELL_CACHE = 'flipbuku-shell-' + VERSION;
 const CDN_CACHE = 'flipbuku-cdn-' + VERSION;
 
@@ -29,10 +31,14 @@ const CDN_HOSTS = [
   'fonts.gstatic.com'
 ];
 
+// File yang harus selalu terbaru (jaringan dulu)
+const FRESH_FIRST = /\.(?:html|css|js|webmanifest|json)$/i;
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(SHELL_CACHE)
-      .then((cache) => Promise.all(SHELL_FILES.map((f) => cache.add(f).catch(() => {}))))
+      // cache:'reload' = ambil langsung dari server, bukan dari cache browser yang mungkin masih lama
+      .then((cache) => Promise.all(SHELL_FILES.map((f) => cache.add(new Request(f, { cache: 'reload' })).catch(() => {}))))
       .then(() => self.skipWaiting())
   );
 });
@@ -58,24 +64,30 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
 
-  // 1) Halaman utama: jaringan dulu (selalu dapat versi terbaru), cadangan dari cache saat offline
-  if (req.mode === 'navigate' && url.origin === self.location.origin) {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          if (res && res.ok) {
-            const copy = res.clone();
-            caches.open(SHELL_CACHE).then((c) => c.put('./index.html', copy));
-          }
-          return res;
-        })
-        .catch(() => caches.match('./index.html').then((r) => r || caches.match('./')))
-    );
-    return;
-  }
-
-  // 2) File statis se-origin (ikon, manifest): cache dulu, perbarui di belakang layar
+  // 1) File milik FlipbuKu sendiri
   if (url.origin === self.location.origin) {
+    const isNav = req.mode === 'navigate';
+    const fresh = isNav || url.pathname.endsWith('/') || FRESH_FIRST.test(url.pathname);
+
+    if (fresh) {
+      // Jaringan dulu (selalu cek versi terbaru ke server), cadangan dari cache saat offline
+      event.respondWith(
+        fetch(new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' }))
+          .then((res) => {
+            if (res && res.ok) {
+              const copy = res.clone();
+              caches.open(SHELL_CACHE).then((c) => c.put(isNav ? './index.html' : req, copy));
+            }
+            return res;
+          })
+          .catch(() =>
+            caches.match(isNav ? './index.html' : req).then((r) => r || (isNav ? caches.match('./') : undefined))
+          )
+      );
+      return;
+    }
+
+    // Gambar/ikon: cache dulu, perbarui di belakang layar
     event.respondWith(
       caches.match(req).then((cached) => {
         const network = fetch(req)
@@ -93,7 +105,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3) Library & font dari CDN: cache dulu, perbarui di belakang layar
+  // 2) Library & font dari CDN: cache dulu, perbarui di belakang layar
   if (CDN_HOSTS.includes(url.hostname)) {
     event.respondWith(
       caches.open(CDN_CACHE).then((cache) =>
@@ -111,5 +123,5 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 4) Lainnya (Supabase, PDF, Al-Quran, dll): langsung ke jaringan, tanpa cache
+  // 3) Lainnya (Supabase, PDF, Al-Quran, dll): langsung ke jaringan, tanpa cache
 });
