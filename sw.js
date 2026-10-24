@@ -1,6 +1,6 @@
 /* FlipbuKu Service Worker
- * - App shell (index.html, aset aplikasi, ikon, manifest) di-cache agar aplikasi cepat dibuka & tetap tampil saat offline.
- * - Library CDN (FontAwesome, Google Fonts, PDF.js, StPageFlip, Supabase JS) di-cache saat pertama dipakai.
+ * - App shell (index.html, ikon, manifest) di-cache agar aplikasi cepat dibuka & tetap tampil saat offline.
+ * - Library CDN (Tailwind, FontAwesome, Google Fonts, PDF.js, StPageFlip, Supabase JS) di-cache saat pertama dipakai.
  * - Data Supabase, file PDF, dan panel Al-Quran TIDAK di-cache (selalu langsung ke jaringan).
  * Ubah VERSION kalau Anda mengganti ikon/file shell supaya cache lama dibuang.
  */
@@ -11,8 +11,8 @@ const CDN_CACHE = 'flipbuku-cdn-' + VERSION;
 const SHELL_FILES = [
   './',
   './index.html',
-  './app.js',
   './styles.css',
+  './app.js',
   './manifest.webmanifest',
   './icon-32.png',
   './icon-64.png',
@@ -22,6 +22,7 @@ const SHELL_FILES = [
 ];
 
 const CDN_HOSTS = [
+  'cdn.tailwindcss.com',
   'cdnjs.cloudflare.com',
   'cdn.jsdelivr.net',
   'fonts.googleapis.com',

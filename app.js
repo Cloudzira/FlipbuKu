@@ -1923,3 +1923,63 @@ const SUPABASE_URL = 'https://pamvpcmkrdgdbyskwzcf.supabase.co'; // contoh: http
         });
       }
     })();
+
+    // ===== PENUNJUK LAYAR: kursor tangan yang digambar di dalam halaman (ikut terkirim saat mirroring ke IFP/Maxhub) =====
+    (function () {
+      var KEY = 'flipbuku_pointer';
+      var reader = document.getElementById('view-reader');
+      var cur = document.getElementById('presenter-cursor');
+      var btn = document.getElementById('pointer-toggle-btn');
+      if (!reader || !cur || !btn) return;
+
+      var enabled = true;
+      try { enabled = localStorage.getItem(KEY) !== '0'; } catch (e) {}
+      var x = -100, y = -100, raf = 0;
+      var LINK_SEL = 'button, a, input, select, label, [onclick], .thumb-item';
+
+      function apply() {
+        reader.classList.toggle('presenter-on', enabled);
+        btn.classList.toggle('is-active', enabled);
+        btn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+        if (!enabled) hide();
+      }
+      function hide() { cur.classList.remove('pc-show', 'pc-down', 'pc-link'); }
+      function paint() { raf = 0; cur.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)'; }
+
+      window.hidePresenterCursor = hide;
+      window.togglePresenterPointer = function () {
+        enabled = !enabled;
+        try { localStorage.setItem(KEY, enabled ? '1' : '0'); } catch (e) {}
+        apply();
+      };
+
+      reader.addEventListener('pointermove', function (e) {
+        if (!enabled || e.pointerType === 'touch') return;
+        x = e.clientX; y = e.clientY;
+        if (!raf) raf = requestAnimationFrame(paint);
+        cur.classList.add('pc-show');
+        cur.classList.toggle('pc-link', !!(e.target.closest && e.target.closest(LINK_SEL)));
+      }, { passive: true });
+
+      reader.addEventListener('pointerdown', function (e) {
+        if (!enabled || e.pointerType === 'touch') return;
+        x = e.clientX; y = e.clientY; paint();
+        cur.classList.add('pc-show', 'pc-down');
+      }, { passive: true });
+
+      ['pointerup', 'pointercancel'].forEach(function (t) {
+        reader.addEventListener(t, function () { cur.classList.remove('pc-down'); }, { passive: true });
+      });
+      reader.addEventListener('pointerleave', hide, { passive: true });
+      window.addEventListener('blur', hide);
+      document.addEventListener('visibilitychange', hide);
+
+      // Sembunyikan kursor otomatis saat halaman baca ditutup (kembali ke katalog/admin)
+      if (window.MutationObserver) {
+        new MutationObserver(function () {
+          if (reader.classList.contains('hidden')) hide();
+        }).observe(reader, { attributes: true, attributeFilter: ['class'] });
+      }
+
+      apply();
+    })();
