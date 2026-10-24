@@ -1,8 +1,8 @@
 /* FlipbuKu Service Worker
- * - App shell (index.html, styles.css, app.js, ikon, manifest) disimpan agar aplikasi cepat dibuka & tetap tampil saat offline.
+ * - App shell (index.html, aset aplikasi, ikon, manifest) di-cache agar aplikasi cepat dibuka & tetap tampil saat offline.
  * - File inti (html/css/js) memakai "jaringan dulu": setiap ada versi baru di hosting, langsung terpakai.
  *   Cache hanya jadi cadangan saat offline.
- * - Library CDN (Tailwind, FontAwesome, Google Fonts, PDF.js, StPageFlip, Supabase JS) di-cache saat pertama dipakai.
+ * - Library CDN (FontAwesome, Google Fonts, PDF.js, StPageFlip, Supabase JS) di-cache saat pertama dipakai.
  * - Data Supabase, file PDF, dan panel Al-Quran TIDAK di-cache (selalu langsung ke jaringan).
  * Ubah VERSION setiap kali Anda mengunggah perubahan besar supaya cache lama dibuang.
  */
@@ -13,8 +13,8 @@ const CDN_CACHE = 'flipbuku-cdn-' + VERSION;
 const SHELL_FILES = [
   './',
   './index.html',
-  './styles.css',
   './app.js',
+  './styles.css',
   './manifest.webmanifest',
   './icon-32.png',
   './icon-64.png',
@@ -23,16 +23,15 @@ const SHELL_FILES = [
   './apple-touch-icon.png'
 ];
 
+// File yang harus selalu terbaru (jaringan dulu)
+const FRESH_FIRST = /\.(?:html|css|js|webmanifest|json)$/i;
+
 const CDN_HOSTS = [
-  'cdn.tailwindcss.com',
   'cdnjs.cloudflare.com',
   'cdn.jsdelivr.net',
   'fonts.googleapis.com',
   'fonts.gstatic.com'
 ];
-
-// File yang harus selalu terbaru (jaringan dulu)
-const FRESH_FIRST = /\.(?:html|css|js|webmanifest|json)$/i;
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
